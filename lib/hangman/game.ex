@@ -32,6 +32,14 @@ defmodule Hangman.Game do
     |> length()
   end
 
+  def revealed_word(%__MODULE__{word: word, guesses: guesses}) do
+    word
+    |> String.graphemes()
+    |> Enum.map(fn letter ->
+      if MapSet.member?(guesses, letter), do: letter, else: "_"
+    end)
+  end
+
   defp determine_state(%__MODULE__{guesses: guesses, max_wrong_guesses: max} = game) do
     cond do
       MapSet.subset?(word_letters(game), guesses) ->

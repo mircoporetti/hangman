@@ -72,4 +72,19 @@ defmodule Hangman.GameTest do
       assert {:error, :already_guessed} = Game.guess(game, "e")
     end
   end
+
+  describe "revealed_word/1" do
+    test "shows underscores for letters not yet guessed" do
+      game = Game.new("elixir")
+
+      assert Game.revealed_word(game) == ["_", "_", "_", "_", "_", "_"]
+    end
+
+    test "reveals correctly guessed letters" do
+      game = Game.new("elixir")
+      {:ok, game} = Game.guess(game, "i")
+
+      assert Game.revealed_word(game) == ["_", "_", "i", "_", "i", "_"]
+    end
+  end
 end
