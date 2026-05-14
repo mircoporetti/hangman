@@ -18,6 +18,10 @@ defmodule Hangman.Game do
     {:ok, %{updated_game | state: determine_state(updated_game)}}
   end
 
+  def guess(%__MODULE__{}, _letter) do
+    {:error, :game_over}
+  end
+
   def wrong_guesses_count(%__MODULE__{} = game) do
     game.guesses
     |> Enum.reject(&MapSet.member?(word_letters(game), &1))

@@ -56,5 +56,13 @@ defmodule Hangman.GameTest do
 
       assert game.state == :lost
     end
+
+    test "the player cannot guess when the game is over" do
+      game = Game.new("hi")
+      {:ok, game} = Game.guess(game, "h")
+      {:ok, game} = Game.guess(game, "i")
+
+      assert {:error, :game_over} = Game.guess(game, "z")
+    end
   end
 end
