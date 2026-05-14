@@ -42,5 +42,19 @@ defmodule Hangman.GameTest do
 
       assert game.state == :won
     end
+
+    test "the player loses after too many wrong guesses" do
+      game = Game.new("elixir")
+
+      letters = ["a", "b", "c", "d", "f", "g", "j"]
+
+      game =
+        Enum.reduce(letters, game, fn letter, acc ->
+          {:ok, updated} = Game.guess(acc, letter)
+          updated
+        end)
+
+      assert game.state == :lost
+    end
   end
 end

@@ -18,21 +18,26 @@ defmodule Hangman.Game do
     {:ok, %{updated_game | state: determine_state(updated_game)}}
   end
 
-  defp determine_state(%__MODULE__{word: word, guesses: guesses}) do
-    word_letters = word |> String.graphemes() |> MapSet.new()
+  def wrong_guesses_count(%__MODULE__{} = game) do
+    game.guesses
+    |> Enum.reject(&MapSet.member?(word_letters(game), &1))
+    |> length()
+  end
 
-    if MapSet.subset?(word_letters, guesses) do
-      :won
-    else
-      :playing
+  defp determine_state(%__MODULE__{guesses: guesses, max_wrong_guesses: max} = game) do
+    cond do
+      MapSet.subset?(word_letters(game), guesses) ->
+        :won
+
+      wrong_guesses_count(game) >= max ->
+        :lost
+
+      true ->
+        :playing
     end
   end
 
-  def wrong_guesses_count(%__MODULE__{word: word, guesses: guesses}) do
-    word_letters = word |> String.graphemes() |> MapSet.new()
-
-    guesses
-    |> Enum.reject(&MapSet.member?(word_letters, &1))
-    |> length()
+  defp word_letters(%__MODULE__{word: word}) do
+    word |> String.graphemes() |> MapSet.new()
   end
 end
