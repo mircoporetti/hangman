@@ -9,7 +9,7 @@ defmodule HangmanWeb.GameLive do
   def mount(_params, _session, socket) do
     game = Game.new(@word)
 
-    {:ok, assign(socket, game: game)}
+    {:ok, assign(socket, game: game, message: nil)}
   end
 
   @impl true
@@ -32,6 +32,10 @@ defmodule HangmanWeb.GameLive do
 
       <%= if @game.state == :lost do %>
         <p class="text-2xl font-bold text-red-600 mb-4">You lost! The word was: <%= @game.word %></p>
+      <% end %>
+
+      <%= if @message do %>
+        <p class="text-yellow-600 mb-4"><%= @message %></p>
       <% end %>
 
       <form phx-submit="guess" class="mb-6">
@@ -57,7 +61,10 @@ defmodule HangmanWeb.GameLive do
 
     case Game.guess(game, String.downcase(letter)) do
       {:ok, updated_game} ->
-        {:noreply, assign(socket, game: updated_game)}
+        {:noreply, assign(socket, game: updated_game, message: nil)}
+
+      {:error, :already_guessed} ->
+        {:noreply, assign(socket, message: "Already guessed")}
 
       {:error, _reason} ->
         {:noreply, socket}
