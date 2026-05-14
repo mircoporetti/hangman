@@ -25,5 +25,27 @@ defmodule HangmanWeb.GameLiveTest do
 
       assert html =~ "Wrong guesses: 1 / 7"
     end
+
+    test "the player sees a victory message when all letters are guessed", %{conn: conn} do
+      {:ok, view, _html} = live(conn, "/")
+
+      for letter <- ["e", "l", "i", "x", "r"] do
+        view |> element("form") |> render_submit(%{"letter" => letter})
+      end
+
+      assert render(view) =~ "You won!"
+    end
+
+    test "the player sees a defeat message after too many wrong guesses", %{conn: conn} do
+      {:ok, view, _html} = live(conn, "/")
+
+      for letter <- ["a", "b", "c", "d", "f", "g", "j"] do
+        view |> element("form") |> render_submit(%{"letter" => letter})
+      end
+
+      html = render(view)
+      assert html =~ "You lost!"
+      assert html =~ "elixir"
+    end
   end
 end

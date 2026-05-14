@@ -26,6 +26,14 @@ defmodule HangmanWeb.GameLive do
         Wrong guesses: <%= Game.wrong_guesses_count(@game) %> / <%= @game.max_wrong_guesses %>
       </p>
 
+      <%= if @game.state == :won do %>
+        <p class="text-2xl font-bold text-green-600 mb-4">You won!</p>
+      <% end %>
+
+      <%= if @game.state == :lost do %>
+        <p class="text-2xl font-bold text-red-600 mb-4">You lost! The word was: <%= @game.word %></p>
+      <% end %>
+
       <form phx-submit="guess" class="mb-6">
         <input
           type="text"
