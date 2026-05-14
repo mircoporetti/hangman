@@ -2,6 +2,7 @@ defmodule HangmanWeb.GameLive do
   use HangmanWeb, :live_view
 
   alias Hangman.Game
+  alias HangmanWeb.Drawing
 
   @word "elixir"
 
@@ -17,6 +18,10 @@ defmodule HangmanWeb.GameLive do
     ~H"""
     <div class="max-w-lg mx-auto mt-10 text-center">
       <h1 class="text-3xl font-bold mb-6">Hangman</h1>
+
+      <div class="inline-block border border-zinc-300 rounded-lg p-6 bg-zinc-50 mb-6">
+        <pre class="text-lg font-mono text-left h-[12rem] w-[12rem] flex items-end"><%= Drawing.render(Game.wrong_guesses_count(@game)) %></pre>
+      </div>
 
       <div class="text-4xl font-mono tracking-widest mb-8">
         <%= Enum.join(Game.revealed_word(@game), " ") %>
