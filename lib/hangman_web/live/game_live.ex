@@ -34,23 +34,31 @@ defmodule HangmanWeb.GameLive do
         <p class="text-2xl font-bold text-red-600 mb-4">You lost! The word was: <%= @game.word %></p>
       <% end %>
 
+      <%= if @game.state != :playing do %>
+        <button phx-click="restart" class="bg-blue-500 text-white px-4 py-2 rounded mb-4">
+          Play again
+        </button>
+      <% end %>
+
       <%= if @message do %>
         <p class="text-yellow-600 mb-4"><%= @message %></p>
       <% end %>
 
-      <form phx-submit="guess" class="mb-6">
-        <input
-          type="text"
-          name="letter"
-          maxlength="1"
-          placeholder=""
-          class="border rounded px-3 py-2 text-center text-lg w-20"
-          autocomplete="off"
-        />
-        <button type="submit" class="ml-2 bg-blue-500 text-white px-4 py-2 rounded">
-          Guess
-        </button>
-      </form>
+      <%= if @game.state == :playing do %>
+        <form phx-submit="guess" class="mb-6">
+          <input
+            type="text"
+            name="letter"
+            maxlength="1"
+            placeholder=""
+            class="border rounded px-3 py-2 text-center text-lg w-20"
+            autocomplete="off"
+          />
+          <button type="submit" class="ml-2 bg-blue-500 text-white px-4 py-2 rounded">
+            Guess
+          </button>
+        </form>
+      <% end %>
     </div>
     """
   end
@@ -69,5 +77,11 @@ defmodule HangmanWeb.GameLive do
       {:error, _reason} ->
         {:noreply, socket}
     end
+  end
+
+  @impl true
+  def handle_event("restart", _params, socket) do
+    game = Game.new(@word)
+    {:noreply, assign(socket, game: game, message: nil)}
   end
 end
