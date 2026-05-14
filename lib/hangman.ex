@@ -1,9 +1,9 @@
 defmodule Hangman do
-  @moduledoc """
-  Hangman keeps the contexts that define your domain
-  and business logic.
+  alias Hangman.Game
+  alias Hangman.WordProvider
 
-  Contexts are also responsible for managing your data, regardless
-  if it comes from the database, an external API or others.
-  """
+  def start_game do
+    word = WordProvider.random_word()
+    Game.new(word)
+  end
 end

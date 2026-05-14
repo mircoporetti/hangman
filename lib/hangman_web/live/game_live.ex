@@ -4,11 +4,9 @@ defmodule HangmanWeb.GameLive do
   alias Hangman.Game
   alias HangmanWeb.Drawing
 
-  @word "elixir"
-
   @impl true
   def mount(_params, _session, socket) do
-    game = Game.new(@word)
+    game = Hangman.start_game()
 
     {:ok, assign(socket, game: game, message: nil)}
   end
@@ -90,7 +88,7 @@ defmodule HangmanWeb.GameLive do
 
   @impl true
   def handle_event("restart", _params, socket) do
-    game = Game.new(@word)
+    game = Hangman.start_game()
     {:noreply, assign(socket, game: game, message: nil)}
   end
 end
