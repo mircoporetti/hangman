@@ -64,5 +64,12 @@ defmodule Hangman.GameTest do
 
       assert {:error, :game_over} = Game.guess(game, "z")
     end
+
+    test "the player cannot guess the same letter twice" do
+      game = Game.new("elixir")
+      {:ok, game} = Game.guess(game, "e")
+
+      assert {:error, :already_guessed} = Game.guess(game, "e")
+    end
   end
 end

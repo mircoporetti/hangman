@@ -13,9 +13,13 @@ defmodule Hangman.Game do
   end
 
   def guess(%__MODULE__{state: :playing} = game, letter) do
-    updated_guesses = MapSet.put(game.guesses, letter)
-    updated_game = %{game | guesses: updated_guesses}
-    {:ok, %{updated_game | state: determine_state(updated_game)}}
+    if MapSet.member?(game.guesses, letter) do
+      {:error, :already_guessed}
+    else
+      updated_guesses = MapSet.put(game.guesses, letter)
+      updated_game = %{game | guesses: updated_guesses}
+      {:ok, %{updated_game | state: determine_state(updated_game)}}
+    end
   end
 
   def guess(%__MODULE__{}, _letter) do
