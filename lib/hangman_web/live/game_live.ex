@@ -21,7 +21,38 @@ defmodule HangmanWeb.GameLive do
       <div class="text-4xl font-mono tracking-widest mb-8">
         <%= Enum.join(Game.revealed_word(@game), " ") %>
       </div>
+
+      <p class="mb-4 text-lg">
+        Wrong guesses: <%= Game.wrong_guesses_count(@game) %> / <%= @game.max_wrong_guesses %>
+      </p>
+
+      <form phx-submit="guess" class="mb-6">
+        <input
+          type="text"
+          name="letter"
+          maxlength="1"
+          placeholder=""
+          class="border rounded px-3 py-2 text-center text-lg w-20"
+          autocomplete="off"
+        />
+        <button type="submit" class="ml-2 bg-blue-500 text-white px-4 py-2 rounded">
+          Guess
+        </button>
+      </form>
     </div>
     """
+  end
+
+  @impl true
+  def handle_event("guess", %{"letter" => letter}, socket) do
+    game = socket.assigns.game
+
+    case Game.guess(game, String.downcase(letter)) do
+      {:ok, updated_game} ->
+        {:noreply, assign(socket, game: updated_game)}
+
+      {:error, _reason} ->
+        {:noreply, socket}
+    end
   end
 end
