@@ -33,5 +33,14 @@ defmodule Hangman.GameTest do
       assert Game.wrong_guesses_count(game) == 1
       assert game.state == :playing
     end
+
+    test "the player wins when all letters are guessed" do
+      game = Game.new("hi")
+
+      {:ok, game} = Game.guess(game, "h")
+      {:ok, game} = Game.guess(game, "i")
+
+      assert game.state == :won
+    end
   end
 end

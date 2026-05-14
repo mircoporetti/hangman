@@ -14,7 +14,18 @@ defmodule Hangman.Game do
 
   def guess(%__MODULE__{state: :playing} = game, letter) do
     updated_guesses = MapSet.put(game.guesses, letter)
-    {:ok, %{game | guesses: updated_guesses}}
+    updated_game = %{game | guesses: updated_guesses}
+    {:ok, %{updated_game | state: determine_state(updated_game)}}
+  end
+
+  defp determine_state(%__MODULE__{word: word, guesses: guesses}) do
+    word_letters = word |> String.graphemes() |> MapSet.new()
+
+    if MapSet.subset?(word_letters, guesses) do
+      :won
+    else
+      :playing
+    end
   end
 
   def wrong_guesses_count(%__MODULE__{word: word, guesses: guesses}) do
