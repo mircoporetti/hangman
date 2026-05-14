@@ -26,6 +26,10 @@ defmodule HangmanWeb.GameLive do
         Wrong guesses: <%= Game.wrong_guesses_count(@game) %> / <%= @game.max_wrong_guesses %>
       </p>
 
+      <p class="mb-4 text-sm text-zinc-500">
+        Guessed: <%= @game.guesses |> MapSet.to_list() |> Enum.sort() |> Enum.join(", ") %>
+      </p>
+
       <%= if @game.state == :won do %>
         <p class="text-2xl font-bold text-green-600 mb-4">You won!</p>
       <% end %>

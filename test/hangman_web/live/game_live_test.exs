@@ -78,5 +78,15 @@ defmodule HangmanWeb.GameLiveTest do
 
       assert html =~ "_ _ _ _ _ _"
     end
+
+    test "the player can see which letters have been guessed", %{conn: conn} do
+      {:ok, view, _html} = live(conn, "/")
+
+      view |> element("form") |> render_submit(%{"letter" => "e"})
+      view |> element("form") |> render_submit(%{"letter" => "z"})
+
+      html = render(view)
+      assert html =~ "Guessed: e, z"
+    end
   end
 end
