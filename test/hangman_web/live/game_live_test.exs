@@ -2,6 +2,14 @@ defmodule HangmanWeb.GameLiveTest do
   use HangmanWeb.ConnCase
 
   import Phoenix.LiveViewTest
+  import Mox
+
+  setup :verify_on_exit!
+
+  setup do
+    stub(Hangman.WordProvider.Mock, :random_word, fn -> "elixir" end)
+    :ok
+  end
 
   describe "game page" do
     test "shows the word as underscores on start", %{conn: conn} do

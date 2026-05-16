@@ -1,14 +1,11 @@
 defmodule HangmanWeb.GameLive do
   use HangmanWeb, :live_view
 
-  alias Hangman.Game
   alias HangmanWeb.Drawing
-
-  @word "elixir"
 
   @impl true
   def mount(_params, _session, socket) do
-    game = Game.new(@word)
+    game = Hangman.start_game()
 
     {:ok, assign(socket, game: game, message: nil)}
   end
@@ -20,15 +17,15 @@ defmodule HangmanWeb.GameLive do
       <h1 class="text-3xl font-bold mb-6">Hangman</h1>
 
       <div class="inline-block border border-zinc-300 rounded-lg p-6 bg-zinc-50 mb-6">
-        <pre class="text-lg font-mono text-left h-[12rem] w-[12rem] flex items-end"><%= Drawing.render(Game.wrong_guesses_count(@game)) %></pre>
+        <pre class="text-lg font-mono text-left h-[12rem] w-[12rem] flex items-end"><%= Drawing.render(Hangman.wrong_guesses_count(@game)) %></pre>
       </div>
 
       <div class="text-4xl font-mono tracking-widest mb-8">
-        <%= Enum.join(Game.revealed_word(@game), " ") %>
+        <%= Enum.join(Hangman.revealed_word(@game), " ") %>
       </div>
 
       <p class="mb-4 text-lg">
-        Wrong guesses: <%= Game.wrong_guesses_count(@game) %> / <%= @game.max_wrong_guesses %>
+        Wrong guesses: <%= Hangman.wrong_guesses_count(@game) %> / <%= @game.max_wrong_guesses %>
       </p>
 
       <p class="mb-4 text-sm text-zinc-500">
@@ -76,7 +73,7 @@ defmodule HangmanWeb.GameLive do
   def handle_event("guess", %{"letter" => letter}, socket) do
     game = socket.assigns.game
 
-    case Game.guess(game, String.downcase(letter)) do
+    case Hangman.guess(game, String.downcase(letter)) do
       {:ok, updated_game} ->
         {:noreply, assign(socket, game: updated_game, message: nil)}
 
@@ -90,7 +87,7 @@ defmodule HangmanWeb.GameLive do
 
   @impl true
   def handle_event("restart", _params, socket) do
-    game = Game.new(@word)
+    game = Hangman.start_game()
     {:noreply, assign(socket, game: game, message: nil)}
   end
 end
