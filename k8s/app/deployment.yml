@@ -1,0 +1,60 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hangman
+  namespace: hangman
+  labels:
+    app: hangman
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: hangman
+  template:
+    metadata:
+      labels:
+        app: hangman
+    spec:
+      containers:
+        - name: hangman
+          image: ghcr.io/mircoporetti/hangman:latest # {"$imagepolicy": "flux-system:hangman"}
+          ports:
+            - containerPort: 4000
+          env:
+            - name: PHX_HOST
+              value: "hangman.mircoporetti.me"
+            - name: PHX_SCHEME
+              value: "https"
+            - name: PHX_URL_PORT
+              value: "443"
+            - name: SECRET_KEY_BASE
+              valueFrom:
+                secretKeyRef:
+                  name: hangman-secret
+                  key: secret-key-base
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 4000
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 4000
+            initialDelaySeconds: 10
+            periodSeconds: 30
+      imagePullSecrets:
+        - name: ghcr-github-secret
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: hangman
+  namespace: hangman
+spec:
+  selector:
+    app: hangman
+  ports:
+    - port: 80
+      targetPort: 4000
