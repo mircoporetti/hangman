@@ -1,21 +1,25 @@
 defmodule Hangman do
   alias Hangman.Game
-  alias Hangman.WordProvider
+  alias Hangman.Game.State
+
+  defp word_provider do
+    Application.fetch_env!(:hangman, :word_provider)
+  end
 
   def start_game do
-    word = WordProvider.random_word()
+    word = word_provider().random_word()
     Game.new(word)
   end
 
-  def guess(%Game{} = game, letter) do
-    Game.guess(game, letter)
+  def guess(%State{} = state, letter) do
+    Game.guess(state, letter)
   end
 
-  def revealed_word(%Game{} = game) do
-    Game.revealed_word(game)
+  def revealed_word(%State{} = state) do
+    Game.revealed_word(state)
   end
 
-  def wrong_guesses_count(%Game{} = game) do
-    Game.wrong_guesses_count(game)
+  def wrong_guesses_count(%State{} = state) do
+    Game.wrong_guesses_count(state)
   end
 end
