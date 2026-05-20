@@ -1,3 +1,5 @@
 defmodule Hangman.Game.State do
-  defstruct [:word, :guesses, :max_wrong_guesses, :state]
+  defstruct [:word, :max_wrong_guesses,
+  guesses: MapSet.new(), 
+  state: :playing]
 end
