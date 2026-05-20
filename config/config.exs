@@ -8,7 +8,8 @@
 import Config
 
 config :hangman,
-  generators: [timestamp_type: :utc_datetime]
+  generators: [timestamp_type: :utc_datetime],
+  word_provider: Hangman.WordProvider.FileProvider
 
 # Configures the endpoint
 config :hangman, HangmanWeb.Endpoint,
