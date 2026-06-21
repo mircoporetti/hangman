@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
         - name: hangman
-          image: ghcr.io/mircoporetti/hangman:f44bff06f3b651cd73f93f64e51306de8b073666 # {"$imagepolicy": "flux-system:hangman"}
+          image: ghcr.io/mircoporetti/hangman:1782068420-0e562eb # {"$imagepolicy": "flux-system:hangman"}
           ports:
             - containerPort: 4000
           env:
