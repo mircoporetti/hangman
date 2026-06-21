@@ -51,19 +51,18 @@ defmodule HangmanWeb.GameLive do
       <% end %>
 
       <%= if @game.state == :playing do %>
-        <form phx-submit="guess" class="mb-6">
+        <div class="mb-6">
           <input
+            id="guess-input"
             type="text"
-            name="letter"
             maxlength="1"
             placeholder=""
             class="border rounded px-3 py-2 text-center text-lg w-20"
             autocomplete="off"
+            phx-hook="DebounceGuess"
           />
-          <button type="submit" class="ml-2 bg-blue-500 text-white px-4 py-2 rounded">
-            Guess
-          </button>
-        </form>
+          <p class="text-xs text-zinc-400 mt-2">Type a letter</p>
+        </div>
       <% end %>
     </div>
     """

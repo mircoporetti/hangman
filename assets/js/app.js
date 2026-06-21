@@ -22,10 +22,29 @@ import {Socket} from "phoenix"
 import {LiveSocket} from "phoenix_live_view"
 import topbar from "../vendor/topbar"
 
+let Hooks = {}
+
+Hooks.DebounceGuess = {
+  mounted() {
+    this.timeout = null
+    this.el.addEventListener("input", (e) => {
+      clearTimeout(this.timeout)
+      const value = e.target.value.trim()
+      if (value.length === 1) {
+        this.timeout = setTimeout(() => {
+          this.pushEvent("guess", {letter: value})
+          this.el.value = ""
+        }, 600)
+      }
+    })
+  }
+}
+
 let csrfToken = document.querySelector("meta[name='csrf-token']").getAttribute("content")
 let liveSocket = new LiveSocket("/live", Socket, {
   longPollFallbackMs: 2500,
-  params: {_csrf_token: csrfToken}
+  params: {_csrf_token: csrfToken},
+  hooks: Hooks
 })
 
 // Show progress bar on live navigation and form submits

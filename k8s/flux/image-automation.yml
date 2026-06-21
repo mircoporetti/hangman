@@ -19,10 +19,11 @@ spec:
   imageRepositoryRef:
     name: hangman
   policy:
-    alphabetical:
+    numerical:
       order: asc
   filterTags:
-    pattern: '^[a-f0-9]{7,40}$'
+    pattern: '^(?P<ts>\d+)-[a-f0-9]{7}$'
+    extract: '$ts'
 ---
 apiVersion: image.toolkit.fluxcd.io/v1
 kind: ImageUpdateAutomation

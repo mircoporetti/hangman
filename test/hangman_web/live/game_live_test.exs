@@ -21,7 +21,7 @@ defmodule HangmanWeb.GameLiveTest do
     test "the player can guess a correct letter", %{conn: conn} do
       {:ok, view, _html} = live(conn, "/")
 
-      html = view |> element("form") |> render_submit(%{"letter" => "e"})
+      html = render_hook(view, "guess", %{"letter" => "e"})
 
       assert html =~ "e _ _ _ _ _"
     end
@@ -29,7 +29,7 @@ defmodule HangmanWeb.GameLiveTest do
     test "a wrong guess shows the mistake count", %{conn: conn} do
       {:ok, view, _html} = live(conn, "/")
 
-      html = view |> element("form") |> render_submit(%{"letter" => "z"})
+      html = render_hook(view, "guess", %{"letter" => "z"})
 
       assert html =~ "Wrong guesses: 1 / 7"
     end
@@ -38,7 +38,7 @@ defmodule HangmanWeb.GameLiveTest do
       {:ok, view, _html} = live(conn, "/")
 
       for letter <- ["e", "l", "i", "x", "r"] do
-        view |> element("form") |> render_submit(%{"letter" => letter})
+        render_hook(view, "guess", %{"letter" => letter})
       end
 
       assert render(view) =~ "You won!"
@@ -48,7 +48,7 @@ defmodule HangmanWeb.GameLiveTest do
       {:ok, view, _html} = live(conn, "/")
 
       for letter <- ["a", "b", "c", "d", "f", "g", "j"] do
-        view |> element("form") |> render_submit(%{"letter" => letter})
+        render_hook(view, "guess", %{"letter" => letter})
       end
 
       html = render(view)
@@ -59,27 +59,27 @@ defmodule HangmanWeb.GameLiveTest do
     test "the player sees a message when guessing an already tried letter", %{conn: conn} do
       {:ok, view, _html} = live(conn, "/")
 
-      view |> element("form") |> render_submit(%{"letter" => "e"})
-      html = view |> element("form") |> render_submit(%{"letter" => "e"})
+      render_hook(view, "guess", %{"letter" => "e"})
+      html = render_hook(view, "guess", %{"letter" => "e"})
 
       assert html =~ "Already guessed"
     end
 
-    test "the form is hidden when the game is over", %{conn: conn} do
+    test "the input is hidden when the game is over", %{conn: conn} do
       {:ok, view, _html} = live(conn, "/")
 
       for letter <- ["e", "l", "i", "x", "r"] do
-        view |> element("form") |> render_submit(%{"letter" => letter})
+        render_hook(view, "guess", %{"letter" => letter})
       end
 
-      refute render(view) =~ "<form"
+      refute render(view) =~ "guess-input"
     end
 
     test "the player can start a new game after winning", %{conn: conn} do
       {:ok, view, _html} = live(conn, "/")
 
       for letter <- ["e", "l", "i", "x", "r"] do
-        view |> element("form") |> render_submit(%{"letter" => letter})
+        render_hook(view, "guess", %{"letter" => letter})
       end
 
       html = view |> element("button", "Play again") |> render_click()
@@ -90,8 +90,8 @@ defmodule HangmanWeb.GameLiveTest do
     test "the player can see which letters have been guessed", %{conn: conn} do
       {:ok, view, _html} = live(conn, "/")
 
-      view |> element("form") |> render_submit(%{"letter" => "e"})
-      view |> element("form") |> render_submit(%{"letter" => "z"})
+      render_hook(view, "guess", %{"letter" => "e"})
+      render_hook(view, "guess", %{"letter" => "z"})
 
       html = render(view)
       assert html =~ "Guessed: e, z"

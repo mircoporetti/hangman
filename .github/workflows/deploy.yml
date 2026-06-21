@@ -3,6 +3,8 @@ name: Build and Push
 on:
   push:
     branches: [main]
+    paths-ignore:
+      - 'k8s/app/**'
   workflow_dispatch:
 
 env:
@@ -54,11 +56,15 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Generate image tag
+        id: tag
+        run: echo "value=$(date +%s)-${GITHUB_SHA::7}" >> "$GITHUB_OUTPUT"
+
       - name: Build and push Docker image
         uses: docker/build-push-action@v5
         with:
           context: .
           push: true
           tags: |
-            ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ github.sha }}
+            ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ steps.tag.outputs.value }}
             ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
