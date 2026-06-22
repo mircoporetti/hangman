@@ -27,16 +27,19 @@ let Hooks = {}
 Hooks.DebounceGuess = {
   mounted() {
     this.timeout = null
-    this.el.addEventListener("input", (e) => {
+    const submitGuess = () => {
       clearTimeout(this.timeout)
-      const value = e.target.value.trim()
+      const value = this.el.value.trim()
       if (value.length === 1) {
         this.timeout = setTimeout(() => {
           this.pushEvent("guess", {letter: value})
           this.el.value = ""
         }, 600)
       }
-    })
+    }
+    this.el.addEventListener("input", submitGuess)
+    this.el.addEventListener("compositionend", submitGuess)
+    this.el.addEventListener("keyup", submitGuess)
   }
 }
 
